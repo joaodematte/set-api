@@ -1,13 +1,15 @@
 /* eslint-disable no-console */
-import 'dotenv/config';
+import { env } from 'process';
 import express from 'express';
+import cors from 'cors';
+import router from './routes';
 
 const app = express();
 
-const port = Number(process.env.PORT) || 5000;
-const host = process.env.HOST;
+const port = Number(env.PORT) || 5000;
+const host = env.HOST;
 
-if (process.env.ENVIRONMENT === 'dev') {
+if (env.ENVIRONMENT === 'dev') {
   app.use((req, res, next) => {
     const requestTime = new Date().toLocaleTimeString('pt-br');
 
@@ -33,9 +35,10 @@ if (process.env.ENVIRONMENT === 'dev') {
   });
 }
 
-app.get('/', (req, res) => {
-  res.send('hello world!');
-});
+app.use(cors());
+app.use(express.json());
+
+app.use('/api', router);
 
 app.listen(port, () => {
   console.log(`✨ server is running at http://${host}:${port}`);
