@@ -72,7 +72,7 @@ export async function getUserByJWT(req: Request, res: Response) {
           name: true,
           surname: true,
           email: true,
-          profile_pic: true
+          profilePic: true
         }
       });
 

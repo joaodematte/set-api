@@ -11,10 +11,29 @@ datasource db {
 }
 
 model User {
-  id          Int    @id @default(autoincrement())
-  email       String @unique
-  password    String
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
+  password   String
+  name       String
+  surname    String
+  profilePic String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model ProductType {
+  id             Int           @id @default(autoincrement())
+  name           String
+  Manufacturer   Manufacturer? @relation(fields: [manufacturerId], references: [id])
+  manufacturerId Int?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model Manufacturer {
+  id          Int           @id @default(autoincrement())
   name        String
-  surname     String
-  profile_pic  String
+  productType ProductType[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 }

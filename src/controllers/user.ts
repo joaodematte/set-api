@@ -67,7 +67,7 @@ export async function createUser(req: Request, res: Response) {
       surname,
       email,
       password,
-      profile_pic: 'https://i.imgur.com/mjovNqT.png'
+      profilePic: 'https://i.imgur.com/mjovNqT.png'
     }
   });
 
@@ -82,7 +82,7 @@ export async function getAllUsers(req: Request, res: Response) {
       name: true,
       surname: true,
       email: true,
-      profile_pic: true
+      profilePic: true
     }
   });
 
