@@ -1,12 +1,12 @@
 import { PrismaClient } from '@prisma/client';
 import { Request, Response } from 'express';
 import { compare } from 'bcryptjs';
-import { sign } from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken';
 import { env } from 'process';
 
 const prisma = new PrismaClient();
 
-export default async function createAuth(req: Request, res: Response) {
+export async function createAuth(req: Request, res: Response) {
   const { email, password, keepConected } = req.body;
 
   if (!email || !password) {
@@ -35,8 +35,9 @@ export default async function createAuth(req: Request, res: Response) {
     });
   }
 
-  const jwtData = sign(
+  const jwt = sign(
     {
+      id: existingUser.id,
       name: existingUser.name,
       surname: existingUser.surname,
       email: existingUser.email,
@@ -50,6 +51,45 @@ export default async function createAuth(req: Request, res: Response) {
 
   return res.status(200).json({
     message: 'Logado com sucesso',
-    data: jwtData
+    user: {
+      ...existingUser,
+      jwt
+    }
+  });
+}
+
+export async function getUserByJWT(req: Request, res: Response) {
+  const { jwt } = req.query;
+
+  verify(jwt as string, env.JWT_SECRET as string, async (error, decoded) => {
+    if (decoded) {
+      const user = await prisma.user.findUnique({
+        where: {
+          id: decoded.id as number
+        },
+        select: {
+          id: true,
+          name: true,
+          surname: true,
+          email: true,
+          profile_pic: true
+        }
+      });
+
+      return res.status(200).json({
+        message: 'Sessão validada',
+        user
+      });
+    }
+
+    if (error) {
+      return res.status(403).json({
+        message: 'Sessão inválida'
+      });
+    }
+
+    return res.status(403).json({
+      message: 'Sessão inválida'
+    });
   });
 }

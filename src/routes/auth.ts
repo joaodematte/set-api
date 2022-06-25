@@ -1,8 +1,10 @@
 import { Router } from 'express';
-import createAuth from '../controllers/auth';
+import { createAuth, getUserByJWT } from '../controllers/auth';
 
 const router = Router();
 
 router.post('/create', createAuth);
+
+router.get('/by-jwt', getUserByJWT);
 
 export default router;
