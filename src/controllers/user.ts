@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { Request, Response } from 'express';
 import { hash } from 'bcryptjs';
 
@@ -14,7 +14,7 @@ type UserForm = {
 };
 
 prisma.$use(async (params, next) => {
-  const userParams = params;
+  const userParams: Prisma.MiddlewareParams = params;
 
   if (params.model === 'User' && (params.action === 'create' || params.action === 'update')) {
     if (params.args.data.password) {

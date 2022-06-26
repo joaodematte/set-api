@@ -21,19 +21,10 @@ model User {
   updatedAt  DateTime @updatedAt
 }
 
-model ProductType {
-  id             Int           @id @default(autoincrement())
-  name           String
-  Manufacturer   Manufacturer? @relation(fields: [manufacturerId], references: [id])
-  manufacturerId Int?
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-}
-
 model Manufacturer {
-  id          Int           @id @default(autoincrement())
-  name        String
-  productType ProductType[]
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id           Int           @id @default(autoincrement())
+  name         String
+  productsType String[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 }

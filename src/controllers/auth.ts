@@ -35,24 +35,22 @@ export async function createAuth(req: Request, res: Response) {
     });
   }
 
-  const jwt = sign(
-    {
-      id: existingUser.id,
-      name: existingUser.name,
-      surname: existingUser.surname,
-      email: existingUser.email,
-      profile_pic: existingUser.profile_pic
-    },
-    env.JWT_SECRET as string,
-    {
-      expiresIn: keepConected ? '365d' : '12h'
-    }
-  );
+  const userWithoutPassword = {
+    id: existingUser.id,
+    name: existingUser.name,
+    surname: existingUser.surname,
+    email: existingUser.email,
+    profilePic: existingUser.profilePic
+  };
+
+  const jwt = sign(userWithoutPassword, env.JWT_SECRET as string, {
+    expiresIn: keepConected ? '365d' : '12h'
+  });
 
   return res.status(200).json({
     message: 'Logado com sucesso',
     user: {
-      ...existingUser,
+      ...userWithoutPassword,
       jwt
     }
   });
@@ -78,7 +76,7 @@ export async function getUserByJWT(req: Request, res: Response) {
 
       return res.status(200).json({
         message: 'Sessão validada',
-        user
+        user: { ...user, jwt }
       });
     }
 
